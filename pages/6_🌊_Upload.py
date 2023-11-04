@@ -28,7 +28,7 @@ if submit_button:
         bytes_data = uploaded_file.getvalue()
         image_base64 = base64.b64encode(bytes_data).decode()
         # st.markdown(result)
-        st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 200px; height: auto;">', unsafe_allow_html=True)
+        st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
         # insert into mongo
         # image_data = {
         #     "username": st.session_state.username,
