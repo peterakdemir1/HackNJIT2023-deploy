@@ -7,8 +7,6 @@ from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
 import time
 
-
-
 st.markdown("<h1 style='text-align: center;'>Login</h1>", unsafe_allow_html=True)
 
 # establish database connection here
@@ -29,8 +27,16 @@ if verify_user:
         st.session_state.logged_in = True
         st.success('Successful Login!')
         time.sleep(1)
+        show_pages(
+            [
+            Page("1_🏴‍☠️_Home.py", "Home", "🏴‍☠️"),
+            # Page("pages/2_⛵_Login.py", "Login", "⛵"),
+            Page("pages/3_❌_Play.py", "Play", "❌"),
+            Page("pages/4_⚓_Profile.py", "Profile", "⚓"),
+            # Page("pages/5_🧭_Register.py", "Register", "🧭"),
+            Page("pages/6_🌊_Upload.py", "Upload", "🌊")
+            ]
+        )
         switch_page('Play')
     else:
         st.warning('Incorrect Username/Password.')
-
-        
