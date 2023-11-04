@@ -40,29 +40,29 @@ def get_gps_info(image_path):
 # get latitude and longitude gps info; this takes in gps exif dict as input so use the return value of get_gps_info()
 def get_coords(gps_data):
     latitude = {
-        'degree': 0,
-        'minute': 0,
-        'second': 0,
-        'reference': 'N'
+        'degrees': 0.0,
+        'minutes': 0.0,
+        'seconds': 0.0,
+        'direction': 'N'
     }
 
     longitude = {
-        'degree': 0,
-        'minute': 0,
-        'second': 0,
-        'reference': 'W'
+        'degrees': 0.0,
+        'minutes': 0.0,
+        'seconds': 0.0,
+        'direction': 'W'
     }
 
     coordinates = [latitude, longitude]
 
-    latitude['degree'] = gps_data[2][0][0] / gps_data[2][0][1]
-    latitude['minute'] = gps_data[2][1][0] / gps_data[2][1][1]
-    latitude['second'] = gps_data[2][2][0] / gps_data[2][2][1]
-    latitude['reference'] = gps_data[1]
+    latitude['degrees'] = gps_data[2][0][0] / gps_data[2][0][1]
+    latitude['minutes'] = gps_data[2][1][0] / gps_data[2][1][1]
+    latitude['seconds'] = gps_data[2][2][0] / gps_data[2][2][1]
+    latitude['direction'] = gps_data[1]
 
-    longitude['degree'] = gps_data[4][0][0] / gps_data[4][0][1]
-    longitude['minute'] = gps_data[4][1][0] / gps_data[4][1][1]
-    longitude['second'] = gps_data[4][2][0] / gps_data[4][2][1]
-    longitude['reference'] = gps_data[3]
+    longitude['degrees'] = gps_data[4][0][0] / gps_data[4][0][1]
+    longitude['minutes'] = gps_data[4][1][0] / gps_data[4][1][1]
+    longitude['seconds'] = gps_data[4][2][0] / gps_data[4][2][1]
+    longitude['direction'] = gps_data[3]
 
     return coordinates
