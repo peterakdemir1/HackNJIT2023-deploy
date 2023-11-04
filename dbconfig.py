@@ -30,9 +30,9 @@ class UsersDao:
         self.DB = self.DB_CONN.get_db()
         self.COLLECTION = self.DB['users']
 
-    def insert_one(self, user: User):
+    def insert_one(self, user: dict):
         try:
-            res = self.COLLECTION.insert_one(user.__dict__)
+            res = self.COLLECTION.insert_one(user)
             if not res.inserted_id:
                 raise Exception
             return user
@@ -40,8 +40,8 @@ class UsersDao:
             print(e)
             return None
 
-    def find_any(self, user: User=None):
-        return [user for user in self.COLLECTION.find(user.__dict__ if user else {})]
+    def find_any(self, user: dict={}):
+        return [user for user in self.COLLECTION.find(user)]
 
 class ImagesDao:
 
@@ -50,9 +50,9 @@ class ImagesDao:
         self.DB = self.DB_CONN.get_db()
         self.COLLECTION = self.DB['images']
     
-    def insert_one(self, image: Image):
+    def insert_one(self, image: dict):
         try:
-            res = self.COLLECTION.insert_one(image.__dict__)
+            res = self.COLLECTION.insert_one(image)
             if not res.inserted_id:
                 raise Exception
             return image
@@ -60,8 +60,8 @@ class ImagesDao:
             print(e)
             return None
     
-    def find_any(self, image: Image=None):
-        return [image for image in self.COLLECTION.find(image.__dict__ if image else {})]
+    def find_any(self, image: dict={}):
+        return [image for image in self.COLLECTION.find(image)]
 
 @st.cache_resource
 def cache_db_conn():
