@@ -1,8 +1,9 @@
 from pymongo.mongo_client import MongoClient
-import hacknjit2023_db_constants as db_const
 import certifi
 from hacknjit2023_models.image import Image
 from hacknjit2023_models.user import User
+import hacknjit2023_db_constants as db_const
+import streamlit as st
 
 class DbConnection:
 
@@ -61,3 +62,15 @@ class ImagesDao:
     
     def find_any(self, image: Image=None):
         return [image for image in self.COLLECTION.find(image.__dict__ if image else {})]
+
+@st.cache_resource
+def cache_db_conn():
+    return DbConnection()
+
+DB_CONN = cache_db_conn()
+
+@st.cache_resource
+def cache_daos(_db_conn):
+    return UsersDao(_db_conn), ImagesDao(_db_conn)
+
+users_dao, images_dao = cache_daos(DB_CONN)
