@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+hacknjit2023_db_constants.py
 
 # C extensions
 *.so
