@@ -1,4 +1,4 @@
 class Image:
-    def __init__(self, username: str, img_bson: bytes):
+    def __init__(self, username: str, image_bytes: bytes):
         self.username = username
-        self.img_bson = img_bson
+        self.image_bytes = image_bytes
