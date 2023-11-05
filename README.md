@@ -1,5 +1,6 @@
 # HackNJIT2023 - Treasure Snap
 Land Ahoy! Set sail across the seven seas to seek out buried treasures, with clues hidden in images ye share! Aye, capture all seven treasures, and may the wind be at yer back!
+https://devpost.com/software/treasure-snap
 ## Technologies Used
 - MongoDB & Atlas
 - Streamlit
