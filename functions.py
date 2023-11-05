@@ -93,7 +93,3 @@ def get_coords(gps_data):
     data['longitude'].update(longitude)
 
     return data
-
-    # json_data = json.dumps(data, indent=4)
-
-    # return json_data

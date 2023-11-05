@@ -2,8 +2,7 @@ from pymongo.mongo_client import MongoClient
 import certifi
 from hacknjit2023_models.image import Image
 from hacknjit2023_models.user import User
-# import hacknjit2023_db_constants as db_const
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 import os
 import streamlit as st
 
