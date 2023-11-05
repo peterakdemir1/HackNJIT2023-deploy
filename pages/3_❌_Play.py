@@ -9,6 +9,7 @@ from streamlit_extras.let_it_rain import rain
 import functions as fn
 import math
 from dbconfig import users_dao, images_dao, solved_dao
+import random
 
 def dms_to_dd(degrees, minutes, seconds, direction):
     dd = degrees + (minutes / 60) + (seconds / 3600)
@@ -35,22 +36,26 @@ def haversine(lat1, lon1, lat2, lon2):
 st.markdown("<h1 style='text-align: center;'>Play Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
 log_out = st.sidebar.button("Log Out")        
-
-# TODO: obtain random image, its riddle, and reward from database
 image_obj = images_dao.find_any()
-target_image = image_obj[0]["image_bytes"]
 
-riddle = image_obj[0]["riddle"]
-reward = image_obj[0]["reward"]
-target_coords = image_obj[0]["coordinates"]
+# Check if the 'target_image' key exists in the session state
+if 'target_image' not in st.session_state or st.button("Next"):
+    # Get a new image, riddle, and reward from the database, cycle through
+    # If the image was created by the user, skip
+    index = random.randint(0, len(image_obj) - 1)
+    st.session_state.target_image = image_obj[index]["image_bytes"]
+    st.session_state.riddle = image_obj[index]["riddle"]
+    st.session_state.reward = image_obj[index]["reward"]
+    st.session_state.target_coords = image_obj[index]["coordinates"]
+    # These lines seem to be for testing purposes and should be removed or commented out
+    # riddle = "riddle2"
+    # reward = "🟨"
 
-if st.button("Next"):
-
-    # get new image, riddle, and reward from database, cycle through
-    # if image created by user, skip
-    image = Image.open('test2.jpg')
-    riddle = "riddle2"
-    reward = "🟨"
+# Use the image from the session state
+target_image = st.session_state.target_image
+riddle = st.session_state.riddle
+reward = st.session_state.reward
+target_coords = st.session_state.target_coords
 
 st.markdown('# Find the treasure!')
 st.image(target_image)
