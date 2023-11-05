@@ -3,7 +3,7 @@ from streamlit_extras.switch_page_button import switch_page
 # from streamlit_extras.let_it_rain import rain
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
-from dbconfig import users_dao, images_dao, solved_dao
+from dbconfig import users_dao, images_dao#, solved_dao
 
 user = {"username": st.session_state.username}
 user_treasures = users_dao.find_any(user)[0]['treasures']

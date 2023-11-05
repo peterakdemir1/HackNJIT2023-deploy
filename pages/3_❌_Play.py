@@ -8,8 +8,34 @@ from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
 import functions as fn
 import math
-from dbconfig import users_dao, images_dao, solved_dao
+from dbconfig import users_dao, images_dao#, solved_dao
 import random
+import os
+
+riddles = {"arduino": "Seek where currents flow but not the sea, an Arduino lies in wait, a treasure of technology.", 
+           "building": "Amidst glass guardians, mini worlds brace, model buildings stand in their display case.", 
+           "duck": "On the second floor, 'midst the campus din, Shekhmus the duck racer rests where students begin.", 
+           "hats": "Avast! Upon a table azure and stable, find ye pirate hats ready and able.", 
+           "painting": "Gaze upon a wall, where colors fight and mix, there a painting hangs, a visual fix.", 
+           "sword": "Look yonder, where the daylight spills, a sword stands sentinel on the windowsill."
+          }
+
+treasures = ["🏴‍☠️","⛵","❌","⚓","🧭","🌊","🦜"]
+
+
+directory = 'test_data'
+
+# Get a list of all files in the directory
+files = os.listdir(directory)
+
+# Filter out the list for files that are prefixed with 'target_'
+target_files = [file for file in files if file.startswith('target_')]
+
+# Choose a random file from the target_files list
+random_file = random.choice(target_files) if target_files else None
+
+object = random_file.split('_')[1].split('.')[0]
+print(object)
 
 def dms_to_dd(degrees, minutes, seconds, direction):
     dd = degrees + (minutes / 60) + (seconds / 3600)
@@ -45,7 +71,7 @@ if 'target_image' not in st.session_state or st.button("Next"):
     # Get a new image, riddle, and reward from the database, cycle through
     # If the image was created by the user, skip
     index = random.randint(0, len(image_obj) - 1)
-    st.session_state.target_image = image_obj[index]["image_bytes"]
+    # st.session_state.target_image = image_obj[index]["image_bytes"]
     st.session_state.riddle = image_obj[index]["riddle"]
     st.session_state.reward = image_obj[index]["reward"]
     st.session_state.target_coords = image_obj[index]["coordinates"]
@@ -54,13 +80,14 @@ if 'target_image' not in st.session_state or st.button("Next"):
     # reward = "🟨"
 
 # Use the image from the session state
-target_image = st.session_state.target_image
+# target_image = st.session_state.target_image
 riddle = st.session_state.riddle
 reward = st.session_state.reward
 target_coords = st.session_state.target_coords
 
 st.markdown('# Find the treasure!')
-st.image(target_image)
+# st.image(target_image)
+# st.markdown(f'<img src="data:image/png;base64,{target_image}" alt="Uploaded Image" style="width: 200px; height: auto;">', unsafe_allow_html=True)
 st.markdown(f'### Riddle:\n{riddle}')
 st.markdown(f'Reward: {reward}')
 
@@ -81,7 +108,7 @@ if submit_button:
         bytes_data = uploaded_file.getvalue()
         image_base64 = base64.b64encode(bytes_data).decode()
         # st.markdown(result)
-        st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
+        st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 200px; height: auto;">', unsafe_allow_html=True)
         gps_info = fn.get_gps_info(image_base64)
         coordinates = fn.get_coords(gps_info)
 
