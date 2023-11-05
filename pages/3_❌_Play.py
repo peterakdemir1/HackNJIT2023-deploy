@@ -8,7 +8,7 @@ from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
 import functions as fn
 import math
-from dbconfig import users_dao, images_dao
+from dbconfig import users_dao, images_dao, solved_dao
 
 def dms_to_dd(degrees, minutes, seconds, direction):
     dd = degrees + (minutes / 60) + (seconds / 3600)
@@ -90,6 +90,16 @@ if submit_button:
         similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
         if similarity >= 0.55:
             st.markdown(f"## Congrats! You found the treasure! {reward}")
+            solve_data = {
+                "username": st.session_state.username,
+                "image_bytes": target_image,
+            }
+            res = solved_dao.insert_one(solve_data)
+            try:
+                solved_dao.insert_one(solve_data)
+                st.success(f'Successfully obtained the reward!')
+            except:
+                t.error(f'Failed uploading your success...')
         else:
             st.markdown("## Argg... It doesn't seem like you found the treasure yet!")
         st.markdown(f'Image Similarity: {similarity*100}%')

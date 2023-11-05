@@ -77,8 +77,18 @@ class SolvedDao:
         self.DB = self.DB_CONN.get_db()
         self.COLLECTION = self.DB['solved']
 
+    def insert_one(self, solve: dict):
+        try:
+            res = self.COLLECTION.insert_one(solve)
+            if not res.inserted_id:
+                raise Exception
+            return solve
+        except Exception as e:
+            # print(e)
+            return None
+
     def find_any(self, username: str):
-        return [image for image in self.COLLECTION.find(username)]
+        return [solve for solve in self.COLLECTION.find(solve)]
     
 @st.cache_resource
 def cache_db_conn():
