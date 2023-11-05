@@ -8,7 +8,7 @@ from dbconfig import users_dao, images_dao, solved_dao
 user = {"username": st.session_state.username}
 user_treasures = users_dao.find_any(user)[0]['treasures']
 
-user_images = solved_dao.find_any(user)[0]['image_bytes']
+# user_images = solved_dao.find_any(user)
 # print("\n\n\n LOOK HERE: ", user_images)
 p1 = user_treasures['1']
 p2 = user_treasures['2']
@@ -53,5 +53,6 @@ if log_out:
     switch_page("Home")
 
 # for image in user_images:
-#     # print(image)
-#     st.markdown(f'<img src="data:image/png;base64,{image[0]}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
+#     selected_image = image["image_bytes"]
+#     # print(selected_image)
+#     st.markdown(f'<img src="data:image/png;base64,{selected_image}" alt="Uploaded Image" style="width: 300px; height: auto;">', unsafe_allow_html=True)
