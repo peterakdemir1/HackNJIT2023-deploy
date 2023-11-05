@@ -10,6 +10,16 @@ import functions as fn
 import math
 from dbconfig import users_dao, images_dao, solved_dao
 
+class SkipCounter:
+    def __init__(self):
+        self.count = 0
+
+@st.cache_resource
+def init_skip_counter():
+    return SkipCounter()
+
+skip_counter = init_skip_counter()
+
 def dms_to_dd(degrees, minutes, seconds, direction):
     dd = degrees + (minutes / 60) + (seconds / 3600)
     if direction in ['S', 'W']:
@@ -48,14 +58,22 @@ if st.button("Next"):
 
     # get new image, riddle, and reward from database, cycle through
     # if image created by user, skip
+    print('curr skip count:', skip_counter.count)
+    res = [i for i in images_dao.COLLECTION.find({}).limit(1).skip(skip_counter.count)][0]
+    print(res['_id'])
+    img = res['image_bytes']
+    st.image(img)
     image = Image.open('test2.jpg')
     riddle = "riddle2"
     reward = "🟨"
+    skip_counter.count += 1
 
-st.markdown('# Find the treasure!')
-st.image(target_image)
-st.markdown(f'### Riddle:\n{riddle}')
-st.markdown(f'Reward: {reward}')
+if skip_counter.count < 1:
+    print('first pic')
+    st.markdown('# Find the treasure!')
+    st.image(target_image)
+    st.markdown(f'### Riddle:\n{riddle}')
+    st.markdown(f'Reward: {reward}')
 
 uploaded_file = st.file_uploader("Found the treasure? Upload an image of it to complete the challenge!", type=["png","jpg"])
 
