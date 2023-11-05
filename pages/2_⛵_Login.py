@@ -1,5 +1,5 @@
 import streamlit as st
-from dbconfig import users_dao, images_dao
+from dbconfig import *
 import streamlit.components.v1 as components
 from streamlit_extras.switch_page_button import switch_page
 # from streamlit_extras.let_it_rain import rain
