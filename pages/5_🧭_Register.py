@@ -10,6 +10,15 @@ def register_account(register_username, register_email, register_password):
 			username = register_username,
 			email = register_email,
 			password = register_password,
+			treasures = {
+				"1":0,
+				"2":0,
+				"3":0,
+				"4":0,
+				"5":0,
+				"6":0,
+				"7":0
+			}
 		)
 		
 		if not users_dao.find_any({'username': register_username}) and not users_dao.find_any({'email': register_email}): # new account
