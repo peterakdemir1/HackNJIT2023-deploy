@@ -6,13 +6,15 @@ from streamlit_extras.switch_page_button import switch_page
 from functions import *
 import io
 from dbconfig import *
+from streamlit_image_select import image_select
 sys.path.append('..')
 
+treasure_files = [f'treasures/{i+1}.png' for i in range(7)]
+treasures = {'1':"🏴‍☠️",'2':"⛵",'3':"❌",'4':"⚓",'5':"🧭",'6':"🌊",'7':"🦜"}
 
 st.markdown("<h1 style='text-align: center;'>Upload Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
 log_out = st.sidebar.button("Log Out")
-
 
 uploaded_file = st.file_uploader("Choose an image", type=["png","jpg"])
 
@@ -22,6 +24,15 @@ if uploaded_file is not None:
     image_bytes = uploaded_file.read()
     # Encode the image bytes as base64
     image_base64 = base64.b64encode(image_bytes).decode()
+    st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
+    selection = image_select(
+        "Select a Treasure:",
+        images=treasure_files,
+        return_value="original"
+    )
+
+    reward = treasures[selection.split('.')[0][-1]]
+
 
 submit_button = st.button("Submit")
 
@@ -29,7 +40,6 @@ if submit_button:
     if uploaded_file is not None:
 
         # st.markdown(result)
-        st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
         # st.write(st.session_state.username)
         # print(get_gps_info(image_base64))
         gps_info = get_gps_info(image_base64)
@@ -42,13 +52,14 @@ if submit_button:
             "username": st.session_state.username,
             "image_bytes": image_bytes,
             "riddle": "test",
-            "reward": "test",
+            "reward": reward,
             "coordinates": coordinates
         }
 
         try:
             images_dao.insert_one(image_data)
             st.success(f'Successfully Uploaded: {uploaded_file.name}')
+
         except:
             st.error(f'Failed Upload: {uploaded_file.name}')
 
