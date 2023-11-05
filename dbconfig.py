@@ -2,13 +2,16 @@ from pymongo.mongo_client import MongoClient
 import certifi
 from hacknjit2023_models.image import Image
 from hacknjit2023_models.user import User
-import hacknjit2023_db_constants as db_const
+# import hacknjit2023_db_constants as db_const
+from dotenv import load_dotenv 
+import os
 import streamlit as st
 
-class DbConnection:
+load_dotenv()
 
+class DbConnection:
     CA = certifi.where()
-    uri = f"mongodb+srv://host:{db_const.PASSWORD}@cluster0.hx0xfxy.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
+    uri = f"mongodb+srv://host:{os.getenv('DB_PASSWORD')}@cluster0.hx0xfxy.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
     client = MongoClient(uri, tlsCAFile=CA)
 
     def __init__(self):
@@ -24,7 +27,6 @@ class DbConnection:
     
 
 class UsersDao:
-    
     def __init__(self, db_conn: DbConnection):
         self.DB_CONN = db_conn
         self.DB = self.DB_CONN.get_db()
@@ -44,7 +46,6 @@ class UsersDao:
         return [user for user in self.COLLECTION.find(user)]
 
 class ImagesDao:
-
     def __init__(self, db_conn: DbConnection):
         self.DB_CONN = db_conn
         self.DB = self.DB_CONN.get_db()
@@ -57,7 +58,7 @@ class ImagesDao:
                 raise Exception
             return image
         except Exception as e:
-            print(e)
+            # print(e)
             return None
     
     def find_any(self, image: dict={}):

@@ -5,7 +5,6 @@ from streamlit_extras.switch_page_button import switch_page
 # from streamlit_extras.let_it_rain import rain
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
-import time
 
 st.markdown("<h1 style='text-align: center;'>Login</h1>", unsafe_allow_html=True)
 
@@ -26,7 +25,6 @@ if verify_user:
         st.session_state.username = fetchedUserList[0]['username']
         st.session_state.logged_in = True
         st.success('Successful Login!')
-        time.sleep(1)
         show_pages(
             [
             Page("1_🏴‍☠️_Home.py", "Home", "🏴‍☠️"),
