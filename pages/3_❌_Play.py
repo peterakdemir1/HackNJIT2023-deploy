@@ -7,7 +7,30 @@ from streamlit_extras.switch_page_button import switch_page
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
 import functions as fn
+import math
 from dbconfig import users_dao, images_dao
+
+def dms_to_dd(degrees, minutes, seconds, direction):
+    dd = degrees + (minutes / 60) + (seconds / 3600)
+    if direction in ['S', 'W']:
+        dd *= -1
+    return dd
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0  # Earth radius in kilometers
+    lat1_rad = math.radians(lat1)
+    lon1_rad = math.radians(lon1)
+    lat2_rad = math.radians(lat2)
+    lon2_rad = math.radians(lon2)
+
+    delta_lat = lat2_rad - lat1_rad
+    delta_lon = lon2_rad - lon1_rad
+
+    a = math.sin(delta_lat / 2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = R * c
+    return distance
 
 st.markdown("<h1 style='text-align: center;'>Play Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
@@ -17,9 +40,9 @@ log_out = st.sidebar.button("Log Out")
 image_obj = images_dao.find_any()
 target_image = image_obj[0]["image_bytes"]
 
-riddle = "I dwell with knowledge from floor to floor, In a house with many keys but not a single door. I'm tucked away, where minds grow sharp, Behind volumes of wisdom, I await your harp. Silent rows guard my bed, In a labyrinth of learning, I lay my head. To find me, you must reach higher ground, Where echoes of thought are often found. Climb the stairs, but not too fast, Past wooden sentries, you shall pass. In the heart of tales and tomes, take a look, For I lie hidden in a literary nook."
-reward = "🟥"
-target_coords = {'latitude': 'longitude'}
+riddle = image_obj[0]["riddle"]
+reward = image_obj[0]["reward"]
+target_coords = image_obj[0]["coordinates"]
 
 if st.button("Next"):
 
@@ -31,6 +54,7 @@ if st.button("Next"):
 
 st.markdown('# Find the treasure!')
 st.image(target_image)
+st.write(target_coords)
 st.markdown(f'### Riddle:\n{riddle}')
 st.markdown(f'Reward: {reward}')
 
@@ -53,8 +77,11 @@ if submit_button:
         # st.markdown(result)
         st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
         st.write(st.session_state.username)
+        gps_info = fn.get_gps_info(image_base64)
+        coordinates = fn.get_coords(gps_info)
         similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
         st.markdown(f'Similarity: {similarity*100}%')
+        st.write(coordinates)
         # insert into mongo
         # image_data = {
         #     "username": st.session_state.username,
