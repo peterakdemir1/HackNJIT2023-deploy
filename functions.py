@@ -18,7 +18,10 @@ model = load_model('vgg16-feature-extractor.h5')
 def extract_features(base64_str):
     img_data = base64.b64decode(base64_str)
     img_file = BytesIO(img_data)
-    img = Image.open(img_file)
+    # img = Image.open(img_file)
+    with open(img_file, 'rb') as image_file:
+        img = image_file.read()
+
     # img = image.load_img(img_path, target_size=(224,224))
     img = img.resize((224, 224))
     img = image.img_to_array(img)

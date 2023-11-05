@@ -11,6 +11,7 @@ import math
 from dbconfig import users_dao, images_dao#, solved_dao
 import random
 import os
+from functions import *
 
 riddles = {"arduino": "Seek where currents flow but not the sea, an Arduino lies in wait, a treasure of technology.", 
            "building": "Amidst glass guardians, mini worlds brace, model buildings stand in their display case.", 
@@ -20,22 +21,9 @@ riddles = {"arduino": "Seek where currents flow but not the sea, an Arduino lies
            "sword": "Look yonder, where the daylight spills, a sword stands sentinel on the windowsill."
           }
 
-treasures = ["🏴‍☠️","⛵","❌","⚓","🧭","🌊","🦜"]
-
+treasures_list = ["🏴‍☠️","⛵","❌","⚓","🧭","🌊","🦜"]
 
 directory = 'test_data'
-
-# Get a list of all files in the directory
-files = os.listdir(directory)
-
-# Filter out the list for files that are prefixed with 'target_'
-target_files = [file for file in files if file.startswith('target_')]
-
-# Choose a random file from the target_files list
-random_file = random.choice(target_files) if target_files else None
-
-object = random_file.split('_')[1].split('.')[0]
-print(object)
 
 def dms_to_dd(degrees, minutes, seconds, direction):
     dd = degrees + (minutes / 60) + (seconds / 3600)
@@ -64,30 +52,45 @@ treasures_dict = {"🏴‍☠️": '1', "⛵": '2', "❌": '3', "⚓": '4', "�
 st.markdown("<h1 style='text-align: center;'>Play Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
 log_out = st.sidebar.button("Log Out")        
-image_obj = images_dao.find_any()
+# image_obj = images_dao.find_any()
 
 # Check if the 'target_image' key exists in the session state
 if 'target_image' not in st.session_state or st.button("Next"):
     # Get a new image, riddle, and reward from the database, cycle through
     # If the image was created by the user, skip
-    index = random.randint(0, len(image_obj) - 1)
+    # index = random.randint(0, len(image_obj) - 1)
     # st.session_state.target_image = image_obj[index]["image_bytes"]
-    st.session_state.riddle = image_obj[index]["riddle"]
-    st.session_state.reward = image_obj[index]["reward"]
-    st.session_state.target_coords = image_obj[index]["coordinates"]
+    # st.session_state.riddle = image_obj[index]["riddle"]
+    # st.session_state.reward = image_obj[index]["reward"]
+    # st.session_state.target_coords = image_obj[index]["coordinates"]
     # These lines seem to be for testing purposes and should be removed or commented out
     # riddle = "riddle2"
     # reward = "🟨"
 
+    files = os.listdir(directory)
+    target_files = [file for file in files if file.startswith('target_')]
+    print('\n\n\n\n\n\n',target_files)
+    random_file = 'test_data\\'+random.choice(target_files) if target_files else None
+    object = random_file.split('.')[0].split('\\')[1].split('_')[1]
+    st.session_state.riddle = riddles[object]
+    st.session_state.reward = treasures_list[random.randint(0,5)]
+    # image_bytes = Image.open(random_file)
+    with open(random_file, 'rb') as image_file:
+        image_bytes = image_file.read()
+
+    st.session_state.target_image = base64.b64encode(image_bytes).decode()
+    gps_info = get_gps_info(st.session_state.target_image)
+    st.session_state.target_coords = get_coords(gps_info)
+
 # Use the image from the session state
-# target_image = st.session_state.target_image
+target_image = st.session_state.target_image
 riddle = st.session_state.riddle
 reward = st.session_state.reward
 target_coords = st.session_state.target_coords
 
 st.markdown('# Find the treasure!')
 # st.image(target_image)
-# st.markdown(f'<img src="data:image/png;base64,{target_image}" alt="Uploaded Image" style="width: 200px; height: auto;">', unsafe_allow_html=True)
+st.markdown(f'<img src="data:image/png;base64,{target_image}" alt="Uploaded Image" style="width: 200px; height: auto;">', unsafe_allow_html=True)
 st.markdown(f'### Riddle:\n{riddle}')
 st.markdown(f'Reward: {reward}')
 
@@ -121,13 +124,20 @@ if submit_button:
         lon2 = dms_to_dd(coordinates["longitude"]["degrees"], coordinates["longitude"]["minutes"], coordinates["longitude"]["seconds"], coordinates["longitude"]["direction"])
 
         distance_km = haversine(lat1, lon1, lat2, lon2)
-        similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
+        # similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
+        target_image_bytes = base64.b64decode(target_image)
+
+        # Then use target_image_bytes in your function
+        similarity = fn.calc_cosine_similarity(
+            fn.extract_features(image_base64),
+            fn.extract_features(target_image_bytes)
+        )
         if similarity >= 0.55 and distance_km <= 0.1:
             st.markdown(f"## Congrats! You found the treasure! {reward}")
-            solve_data = {
-                "username": st.session_state.username,
-                "image_bytes": target_image,
-            }
+            # solve_data = {
+            #     "username": st.session_state.username,
+            #     "image_bytes": target_image,
+            # }
             try:
                 # solved_dao.insert_one(solve_data)
                 # users_dao.insert
