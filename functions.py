@@ -7,7 +7,6 @@ import piexif
 from PIL import Image
 from io import BytesIO
 import base64
-import json
 
 # this is the VGG16 pre-trained model for image classification
 # model = VGG16(weights='imagenet')
@@ -44,6 +43,7 @@ def get_gps_info(base64_str):
     img = Image.open(img_file)
     # Load metadata
     exif_dict = piexif.load(img.info["exif"])
+
     # Get the GPS data
     gps_info = exif_dict.get('GPS', {})
     return gps_info
@@ -92,6 +92,4 @@ def get_coords(gps_data):
     data['latitude'].update(latitude)
     data['longitude'].update(longitude)
 
-    json_data = json.dumps(data, indent=4)
-
-    return json_data
+    return data
