@@ -87,7 +87,7 @@ class SolvedDao:
             # print(e)
             return None
 
-    def find_any(self, username: str):
+    def find_any(self, solve: str):
         return [solve for solve in self.COLLECTION.find(solve)]
     
 @st.cache_resource
