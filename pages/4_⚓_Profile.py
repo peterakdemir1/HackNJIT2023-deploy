@@ -52,6 +52,6 @@ if log_out:
     )
     switch_page("Home")
 
-for image in user_images:
-    # print(image)
-    st.markdown(f'<img src="data:image/png;base64,{image[0]}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
+# for image in user_images:
+#     # print(image)
+#     st.markdown(f'<img src="data:image/png;base64,{image[0]}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
