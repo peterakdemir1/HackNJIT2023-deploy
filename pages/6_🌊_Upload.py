@@ -46,8 +46,6 @@ if submit_button:
         gps_info = get_gps_info(image_base64)
         coordinates = get_coords(gps_info)
 
-        st.write(f"Coordinates: {coordinates}")
-
         # insert into mongo
         image_data = {
             "username": st.session_state.username,
