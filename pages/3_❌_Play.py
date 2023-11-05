@@ -54,7 +54,6 @@ if st.button("Next"):
 
 st.markdown('# Find the treasure!')
 st.image(target_image)
-st.write(target_coords)
 st.markdown(f'### Riddle:\n{riddle}')
 st.markdown(f'Reward: {reward}')
 
@@ -76,12 +75,26 @@ if submit_button:
         image_base64 = base64.b64encode(bytes_data).decode()
         # st.markdown(result)
         st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
-        st.write(st.session_state.username)
         gps_info = fn.get_gps_info(image_base64)
         coordinates = fn.get_coords(gps_info)
+
+        # First point
+        lat1 = dms_to_dd(target_coords["latitude"]["degrees"], target_coords["latitude"]["minutes"], target_coords["latitude"]["seconds"], target_coords["latitude"]["direction"])
+        lon1 = dms_to_dd(target_coords["longitude"]["degrees"], target_coords["longitude"]["minutes"], target_coords["longitude"]["seconds"], target_coords["longitude"]["direction"])
+
+        # Second point
+        lat2 = dms_to_dd(coordinates["latitude"]["degrees"], coordinates["latitude"]["minutes"], coordinates["latitude"]["seconds"], coordinates["latitude"]["direction"])
+        lon2 = dms_to_dd(coordinates["longitude"]["degrees"], coordinates["longitude"]["minutes"], coordinates["longitude"]["seconds"], coordinates["longitude"]["direction"])
+
+        distance_km = haversine(lat1, lon1, lat2, lon2)
         similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
-        st.markdown(f'Similarity: {similarity*100}%')
-        st.write(coordinates)
+        if similarity >= 0.55:
+            st.markdown(f"## Congrats! You found the treasure! {reward}")
+        else:
+            st.markdown("## Argg... It doesn't seem like you found the treasure yet!")
+        st.markdown(f'Image Similarity: {similarity*100}%')
+        st.markdown(f'Distance From Treasure: {distance_km * 1000} meters')
+
         # insert into mongo
         # image_data = {
         #     "username": st.session_state.username,
