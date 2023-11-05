@@ -33,6 +33,7 @@ if uploaded_file is not None:
 
     reward = treasures[selection.split('.')[0][-1]]
 
+    riddle = st.text_input("Riddle:")
 
 submit_button = st.button("Submit")
 
@@ -45,13 +46,11 @@ if submit_button:
         gps_info = get_gps_info(image_base64)
         coordinates = get_coords(gps_info)
 
-        st.write(f"Coordinates: {coordinates}")
-
         # insert into mongo
         image_data = {
             "username": st.session_state.username,
             "image_bytes": image_bytes,
-            "riddle": "test",
+            "riddle": riddle,
             "reward": reward,
             "coordinates": coordinates
         }
