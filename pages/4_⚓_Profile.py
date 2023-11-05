@@ -3,14 +3,21 @@ from streamlit_extras.switch_page_button import switch_page
 # from streamlit_extras.let_it_rain import rain
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
+from dbconfig import users_dao, images_dao
 
-p1 = 2
-p2 = 5
-p3 = 7
-p4 = 8
-p5 = 2
-p6 = 6
-p7 = 3
+user = {"username": st.session_state.username}
+user_treasures = users_dao.find_any(user)[0]['treasures']
+
+user_images = images_dao.find_any(user)[0]
+
+print("\n\n\n LOOK HERE: ", user_images)
+p1 = user_treasures['1']
+p2 = user_treasures['2']
+p3 = user_treasures['3']
+p4 = user_treasures['4']
+p5 = user_treasures['5']
+p6 = user_treasures['6']
+p7 = user_treasures['7']
 
 st.markdown("<h1 style='text-align: center;'>Profile</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
@@ -27,7 +34,7 @@ st.markdown(f'''
 <p>🦜: {p7} found!</p>
 <br>
 
-<h3>Uploaded Images</h3>
+<h3>Found Treasures!</h3>
 <p>Put each image here</p>
 ''', unsafe_allow_html=True)
 
@@ -45,3 +52,7 @@ if log_out:
         ]
     )
     switch_page("Home")
+# for image in user_images:
+#     st.image(image["image_byte"])
+#     count = image[]
+#     st.markdown()

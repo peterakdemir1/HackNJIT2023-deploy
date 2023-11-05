@@ -62,7 +62,24 @@ class ImagesDao:
     
     def find_any(self, image: dict={}):
         return [image for image in self.COLLECTION.find(image)]
+    
+    def get_images_by_user(self, username: str):
+        query = {"username": username}
+        images = self.COLLECTION.find(query)
+        user_images = []
+        for image in images:
+            image_bytes = image["image_bytes"]
+            user_images.append(image_bytes)
 
+class SolvedDao:
+    def __init__(self, db_conn: DbConnection):
+        self.DB_CONN = db_conn
+        self.DB = self.DB_CONN.get_db()
+        self.COLLECTION = self.DB['solved']
+
+    def find_any(self, username: str):
+        return [image for image in self.COLLECTION.find(username)]
+    
 @st.cache_resource
 def cache_db_conn():
     return DbConnection()
