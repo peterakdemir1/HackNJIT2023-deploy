@@ -16,7 +16,7 @@ rain(
 )
 
 
-st.markdown("<h1 style='text-align: center;'>TITLE</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Treasure Snap!</h1>", unsafe_allow_html=True)
 
 st.markdown('''
 Argh Matey! Explore the world to find me hidden treasures.
