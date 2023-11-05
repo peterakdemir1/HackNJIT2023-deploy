@@ -7,13 +7,16 @@ from streamlit_extras.switch_page_button import switch_page
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
 import functions as fn
+from dbconfig import users_dao, images_dao
 
 st.markdown("<h1 style='text-align: center;'>Play Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
 log_out = st.sidebar.button("Log Out")        
 
 # TODO: obtain random image, its riddle, and reward from database
-image = Image.open('test-images/laptop1.jpg')
+image_obj = images_dao.find_any()
+target_image = image_obj[0]["image_bytes"]
+
 riddle = "I dwell with knowledge from floor to floor, In a house with many keys but not a single door. I'm tucked away, where minds grow sharp, Behind volumes of wisdom, I await your harp. Silent rows guard my bed, In a labyrinth of learning, I lay my head. To find me, you must reach higher ground, Where echoes of thought are often found. Climb the stairs, but not too fast, Past wooden sentries, you shall pass. In the heart of tales and tomes, take a look, For I lie hidden in a literary nook."
 reward = "🟥"
 target_coords = {'latitude': 'longitude'}
@@ -27,7 +30,7 @@ if st.button("Next"):
     reward = "🟨"
 
 st.markdown('# Find the treasure!')
-st.image(image)
+st.image(target_image)
 st.markdown(f'### Riddle:\n{riddle}')
 st.markdown(f'Reward: {reward}')
 
@@ -50,8 +53,8 @@ if submit_button:
         # st.markdown(result)
         st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
         st.write(st.session_state.username)
-        similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features())
-        st.markdown(f'Similarity: {similarity}')
+        similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
+        st.markdown(f'Similarity: {similarity*100}%')
         # insert into mongo
         # image_data = {
         #     "username": st.session_state.username,
