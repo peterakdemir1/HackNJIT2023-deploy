@@ -40,6 +40,19 @@ class UsersDao:
         except Exception as e:
             print(e)
             return None
+    
+    def update_one(self, user, newUser):
+        try:
+            if user == {} or user == None:
+                return
+            res = self.COLLECTION.update_one(user, {'$set': newUser})
+            if not res.upserted_id:
+                raise Exception
+            return newUser
+        except Exception as e:
+            print(e)
+            return None
+
 
     def find_any(self, user: dict={}):
         return [user for user in self.COLLECTION.find(user)]
