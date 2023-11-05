@@ -33,6 +33,8 @@ def haversine(lat1, lon1, lat2, lon2):
     distance = R * c
     return distance
 
+treasures_dict = {"🏴‍☠️": '1', "⛵": '2', "❌": '3', "⚓": '4', "🧭": '5', "🌊": '6', "🦜": '7'}
+
 st.markdown("<h1 style='text-align: center;'>Play Challenge</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("Logged in as: " + st.session_state.username)
 log_out = st.sidebar.button("Log Out")        
@@ -93,18 +95,25 @@ if submit_button:
 
         distance_km = haversine(lat1, lon1, lat2, lon2)
         similarity = fn.calc_cosine_similarity(fn.extract_features(image_base64), fn.extract_features(base64.b64encode(target_image).decode()))
-        if similarity >= 0.55:
+        if similarity >= 0.55 and distance_km <= 0.1:
             st.markdown(f"## Congrats! You found the treasure! {reward}")
             solve_data = {
                 "username": st.session_state.username,
                 "image_bytes": target_image,
             }
-            res = solved_dao.insert_one(solve_data)
             try:
-                solved_dao.insert_one(solve_data)
+                # solved_dao.insert_one(solve_data)
+                # users_dao.insert
+                old_treasures = users_dao.find_any({'username': st.session_state.username})[0]['treasures']
+                old_treasures[treasures_dict[reward]] += 1
+                updated_user = {
+                    'username': st.session_state.username,
+                    'treasurers': old_treasures
+                }
+                users_dao.update_one(updated_user)
                 st.success(f'Successfully obtained the reward!')
             except:
-                t.error(f'Failed uploading your success...')
+                st.error(f'Failed uploading your success...')
         else:
             st.markdown("## Argg... It doesn't seem like you found the treasure yet!")
         st.markdown(f'Image Similarity: {similarity*100}%')
