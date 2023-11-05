@@ -3,6 +3,9 @@ import base64
 import sys
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.switch_page_button import switch_page
+from functions import *
+import io
+from dbconfig import *
 sys.path.append('..')
 
 
@@ -24,29 +27,33 @@ submit_button = st.button("Submit")
 
 if submit_button:
     if uploaded_file is not None:
-        # convert to Base64
-        bytes_data = uploaded_file.getvalue()
-        image_base64 = base64.b64encode(bytes_data).decode()
+
         # st.markdown(result)
         st.markdown(f'<img src="data:image/png;base64,{image_base64}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)
-        st.write(st.session_state.username)
+        # st.write(st.session_state.username)
+        # print(get_gps_info(image_base64))
+        gps_info = get_gps_info(image_base64)
+        coordinates = get_coords(gps_info)
+
+        st.write(f"Coordinates: {coordinates}")
 
         # insert into mongo
-        # image_data = {
-        #     "username": st.session_state.username,
-        #     "img_bson": bytes_data,
-        #     "coordinates": result
-        # }
+        image_data = {
+            "username": st.session_state.username,
+            "image_bytes": image_bytes,
+            "riddle": "test",
+            "reward": "test",
+            "coordinates": coordinates
+        }
 
-        # try:
-        #     images_dao.insert_one(image_data)
-        #     st.success(f'Successfully Uploaded: {uploaded_file.name}')
-        # except:
-        #     st.error(f'Failed Upload: {uploaded_file.name}')
+        try:
+            images_dao.insert_one(image_data)
+            st.success(f'Successfully Uploaded: {uploaded_file.name}')
+        except:
+            st.error(f'Failed Upload: {uploaded_file.name}')
 
     else:
         st.warning("Please upload a file before submitting.")
-
 
 if log_out:
     st.session_state.logged_in = False

@@ -26,7 +26,6 @@ class DbConnection:
     
 
 class UsersDao:
-    
     def __init__(self, db_conn: DbConnection):
         self.DB_CONN = db_conn
         self.DB = self.DB_CONN.get_db()
@@ -46,7 +45,6 @@ class UsersDao:
         return [user for user in self.COLLECTION.find(user)]
 
 class ImagesDao:
-
     def __init__(self, db_conn: DbConnection):
         self.DB_CONN = db_conn
         self.DB = self.DB_CONN.get_db()
@@ -59,7 +57,7 @@ class ImagesDao:
                 raise Exception
             return image
         except Exception as e:
-            print(e)
+            # print(e)
             return None
     
     def find_any(self, image: dict={}):
