@@ -3,14 +3,13 @@ from streamlit_extras.switch_page_button import switch_page
 # from streamlit_extras.let_it_rain import rain
 from st_pages import Page, show_pages, add_page_title
 from streamlit_extras.let_it_rain import rain
-from dbconfig import users_dao, images_dao
+from dbconfig import users_dao, images_dao, solved_dao
 
 user = {"username": st.session_state.username}
 user_treasures = users_dao.find_any(user)[0]['treasures']
 
-user_images = images_dao.find_any(user)[0]
-
-print("\n\n\n LOOK HERE: ", user_images)
+user_images = solved_dao.find_any(user)[0]['image_bytes']
+# print("\n\n\n LOOK HERE: ", user_images)
 p1 = user_treasures['1']
 p2 = user_treasures['2']
 p3 = user_treasures['3']
@@ -52,7 +51,7 @@ if log_out:
         ]
     )
     switch_page("Home")
-# for image in user_images:
-#     st.image(image["image_byte"])
-#     count = image[]
-#     st.markdown()
+
+for image in user_images:
+    # print(image)
+    st.markdown(f'<img src="data:image/png;base64,{image[0]}" alt="Uploaded Image" style="width: 600px; height: auto;">', unsafe_allow_html=True)

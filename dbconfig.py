@@ -88,6 +88,6 @@ DB_CONN = cache_db_conn()
 
 @st.cache_resource
 def cache_daos(_db_conn):
-    return UsersDao(_db_conn), ImagesDao(_db_conn)
+    return UsersDao(_db_conn), ImagesDao(_db_conn), SolvedDao(_db_conn)
 
-users_dao, images_dao = cache_daos(DB_CONN)
+users_dao, images_dao, solved_dao  = cache_daos(DB_CONN)
