@@ -33,6 +33,7 @@ if uploaded_file is not None:
 
     reward = treasures[selection.split('.')[0][-1]]
 
+    riddle = st.text_input("Riddle:")
 
 submit_button = st.button("Submit")
 
@@ -51,7 +52,7 @@ if submit_button:
         image_data = {
             "username": st.session_state.username,
             "image_bytes": image_bytes,
-            "riddle": "test",
+            "riddle": riddle,
             "reward": reward,
             "coordinates": coordinates
         }
