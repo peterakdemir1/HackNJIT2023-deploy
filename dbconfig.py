@@ -10,7 +10,7 @@ load_dotenv()
 
 class DbConnection:
     CA = certifi.where()
-    uri = f"mongodb+srv://host:{os.getenv('DB_PASSWORD')}@cluster0.hx0xfxy.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
+    uri = f"mongodb+srv://host2:{os.getenv('DB_PASSWORD3')}@cluster0.hx0xfxy.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
     client = MongoClient(uri, tlsCAFile=CA)
 
     def __init__(self):
