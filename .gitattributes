@@ -1,1 +1,2 @@
 *.h5 filter=lfs diff=lfs merge=lfs -text
+vgg16-feature-extractor.h5 filter=lfs diff=lfs merge=lfs -text
